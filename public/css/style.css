@@ -112,3 +112,7 @@
   min-height: 29.7cm;
   font-size: initial;
 }
+
+.overflow-hidden {
+  overflow: hidden;
+}

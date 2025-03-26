@@ -1,3 +1,44 @@
 <section id="invoiceHistoryTab" class="tab-content">
-  <h2>Historique des factures</h2>
+  <% if (invoiceYear && invoiceYear.length > 0) { %> <% invoiceYear.map(year => { %>
+  <details name="invoiceYear" data-invoice-year="<%= year %>">
+    <summary><%= year %></summary>
+    <div class="months-container"></div>
+  </details>
+  <% }) %> <% } else { %>
+  <p>Aucune facture disponible.</p>
+  <% } %>
 </section>
+
+<!-- <details>
+  <summary>2024</summary>
+  <details class="overflow-auto">
+    <summary class="overflow-hidden">Janvier</summary>
+    <table class="striped">
+      <thead>
+        <tr>
+          <th>Nom du Client</th>
+          <th>Montant (€)</th>
+          <th>Date de Facture</th>
+          <th>Échéance</th>
+          <th>Statut</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Jean Dupont</td>
+          <td>1500 €</td>
+          <td>01/01/2024</td>
+          <td>15/01/2024</td>
+          <td>Payée</td>
+        </tr>
+        <tr>
+          <td>Marie Curie</td>
+          <td>2200 €</td>
+          <td>05/01/2024</td>
+          <td>20/01/2024</td>
+          <td>En attente</td>
+        </tr>
+      </tbody>
+    </table>
+  </details>
+</details> -->

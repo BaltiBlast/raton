@@ -13,7 +13,7 @@ const { getProfile, postProfile } = userControllers;
 
 // -- invoices
 const invoiceControllers = require("./controllers/invoices/invoiceControllers");
-const { getInvoice, postSendInvoiceEmail } = invoiceControllers;
+const { getInvoice, postSendInvoiceEmail, getUserInvoicesByYear } = invoiceControllers;
 
 // -- clients
 const clientsController = require("./controllers/clients/clientsController");
@@ -43,6 +43,7 @@ router.post("/profile-update", ensureAuthenticated, postProfile);
 
 // INVOICES ROUTES
 router.get("/invoice", ensureAuthenticated, getInvoice);
+router.get("/invoices/:year", ensureAuthenticated, getUserInvoicesByYear);
 router.post("/invoice-send-email", ensureAuthenticated, postSendInvoiceEmail);
 
 // CONTACTS ROUTES

@@ -25,6 +25,7 @@ const invoiceFormInteraction = {
     invoiceTabManagement();
     showInvoicePreview();
     closeInvoicePreview();
+    getInvoiceUserByYear();
   },
 
   // ------------------------------------------------------------------------------------ //
@@ -33,6 +34,113 @@ const invoiceFormInteraction = {
     const response = await fetch(`/client/${clientId}`);
     const data = await response.json();
     selectedClient = data;
+  },
+
+  // ------------------------------------------------------------------------------------ //
+  // Get user history by year
+  getInvoiceUserByYear: () => {
+    const yearsDetails = document.querySelectorAll('details[name="invoiceYear"]');
+
+    yearsDetails.forEach((details) => {
+      details.addEventListener("toggle", async () => {
+        if (!details.open) return;
+        const year = details.getAttribute("data-invoice-year");
+
+        // Si déjà chargé, ne pas refaire la requête
+        if (details.dataset.loaded) return;
+
+        try {
+          const response = await fetch(`/invoices/${year}`);
+          const invoices = await response.json();
+
+          const monthsContainer = details.querySelector(".months-container");
+          monthsContainer.innerHTML = ""; // Reset affichage
+
+          // Organisation des factures par mois
+          const months = groupInvoicesByMonth(invoices);
+
+          // Création des mois
+          Object.keys(months).forEach((month) => {
+            const monthDetails = document.createElement("details");
+            monthDetails.classList.add("month-details");
+            monthDetails.setAttribute("data-month", month);
+            monthDetails.innerHTML = `<summary>${month}</summary><div class="invoice-container"></div>`;
+
+            monthsContainer.appendChild(monthDetails);
+
+            // Gestion de l'ouverture du mois
+            monthDetails.addEventListener("toggle", () => {
+              if (!monthDetails.open) return;
+              if (monthDetails.dataset.loaded) return;
+
+              const invoiceContainer = monthDetails.querySelector(".invoice-container");
+              const table = createInvoiceTable(months[month]);
+              invoiceContainer.appendChild(table);
+              monthDetails.dataset.loaded = true;
+            });
+          });
+
+          details.dataset.loaded = true;
+        } catch (error) {
+          console.error("Erreur de chargement :", error);
+        }
+      });
+    });
+  },
+
+  groupInvoicesByMonth: (invoices) => {
+    return invoices.reduce((acc, invoice) => {
+      if (!acc[invoice.invoice_month]) {
+        acc[invoice.invoice_month] = [];
+      }
+      acc[invoice.invoice_month].push(invoice);
+      return acc;
+    }, {});
+  },
+
+  createInvoiceTable: (invoices) => {
+    const table = document.createElement("table");
+    table.classList.add("invoice-table");
+
+    table.innerHTML = `
+      <thead>
+        <tr>
+          <th>N° Facture</th>
+          <th>Client</th>
+          <th>Service</th>
+          <th>Quantité</th>
+          <th>Prix Unitaire (€)</th>
+          <th>Total (€)</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    `;
+
+    const tbody = table.querySelector("tbody");
+
+    invoices.forEach((invoice) => {
+      invoice.services.forEach((service, index) => {
+        const row = document.createElement("tr");
+
+        if (index === 0) {
+          row.innerHTML += `
+            <td rowspan="${invoice.services.length}">${invoice.invoice_id}</td>
+            <td rowspan="${invoice.services.length}">${invoice.client.client_name}</td>
+          `;
+        }
+
+        row.innerHTML += `
+          <td>${service.service_name}</td>
+          <td>${service.service_quantity}</td>
+          <td>${service.service_price}</td>
+          <td>${service.total_price}</td>
+        `;
+
+        tbody.appendChild(row);
+      });
+    });
+
+    return table;
   },
 
   // ------------------------------------------------------------------------------------ //
@@ -321,6 +429,9 @@ const {
   showInvoicePreview,
   closeInvoicePreview,
   getSelectedServices,
+  getInvoiceUserByYear,
+  groupInvoicesByMonth,
+  createInvoiceTable,
 } = invoiceFormInteraction;
 
 document.addEventListener("DOMContentLoaded", invoiceFormInteraction.init());
