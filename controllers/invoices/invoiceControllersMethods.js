@@ -1,5 +1,5 @@
 // Mapper
-const { ServicesMapper, InvoiceServicesMapper } = require("../../models/index.mapper");
+const { ServicesMapper, InvoiceServicesMapper, ClientsMapper } = require("../../models/index.mapper");
 
 // PDF
 const { generate } = require("@pdfme/generator");
@@ -17,6 +17,42 @@ const { userFullName } = require("../../utils/genericMethods");
 
 // ===== CONTROLLERS METHODS ===== //
 const invoiceControllersMethods = {
+  // ------------------------------------------------------------------------------------ //
+  // Invoice formater for history
+  invoiceHistoryFormater: async (invoicesByYear) => {
+    return await Promise.all(
+      invoicesByYear.map(async (invoice) => {
+        const { invoice_id, invoice_client_id } = invoice;
+
+        const client = await ClientsMapper.getClientById(invoice_client_id);
+        const servicesData = await InvoiceServicesMapper.getInvoiceServices(invoice_id);
+
+        const services = await Promise.all(
+          servicesData.map(async (service) => {
+            const { service_id, service_quantity } = service;
+            const serviceData = await ServicesMapper.getServiceById(service_id);
+
+            const { service_name, service_price } = serviceData[0];
+            const totalPrice = service_quantity * service_price;
+
+            return {
+              service_name,
+              service_quantity,
+              service_price,
+              total_price: totalPrice,
+            };
+          })
+        );
+
+        return {
+          ...invoice,
+          client,
+          services: services.filter(Boolean),
+        };
+      })
+    );
+  },
+
   // ------------------------------------------------------------------------------------ //
   // Return an array with the services formated for the invoice
   formatingInvoiceServices: async (services) => {

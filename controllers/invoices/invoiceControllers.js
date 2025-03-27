@@ -1,12 +1,6 @@
 // ===== IMPORTS ===== //
 // Models
-const {
-  ClientsMapper,
-  ServicesMapper,
-  UserMapper,
-  InvoicesMapper,
-  InvoiceServicesMapper,
-} = require("../../models/index.mapper");
+const { ClientsMapper, ServicesMapper, UserMapper, InvoicesMapper } = require("../../models/index.mapper");
 
 // Utils
 const { months, userFullName } = require("../../utils/genericMethods");
@@ -19,6 +13,7 @@ const {
   invoicePdfGenerator,
   sendInvoiceEmail,
   addInvoiceServicesToDatabase,
+  invoiceHistoryFormater,
 } = require("./invoiceControllersMethods");
 
 // ===== CONTROLLERS ===== //
@@ -96,7 +91,7 @@ const invoiceControllers = {
       // Invoice total service price
       const totalPrice = servicesInformation.reduce((sum, service) => sum + Number(service.at(-1)), 0);
 
-      // Dynamic invoice data
+      // Dynamic PDF invoice data
       const inputs = [
         {
           invoiceTitle: invoiceTitle,
@@ -142,44 +137,7 @@ const invoiceControllers = {
       const year = req.params.year;
       const userId = req.session.user.user_id;
       const invoicesByYear = await InvoicesMapper.getUserInvoicesByYear(userId, year);
-
-      const formatedInvoices = await Promise.all(
-        invoicesByYear.map(async (invoice) => {
-          const { invoice_id, invoice_client_id } = invoice;
-
-          // 2. Récupérer le client associé
-          const client = await ClientsMapper.getClientById(invoice_client_id);
-
-          // 3. Récupérer les services liés à la facture
-          const servicesData = await InvoiceServicesMapper.getInvoiceServices(invoice_id);
-
-          // 4. Mapper les services pour récupérer leurs détails
-          const services = await Promise.all(
-            servicesData.map(async (service) => {
-              const { service_id, service_quantity } = service;
-              const serviceData = await ServicesMapper.getServiceById(service_id);
-
-              if (!serviceData.length) return null; // Sécurité si le service n'existe pas
-
-              const { service_name, service_price } = serviceData[0];
-              const totalPrice = service_quantity * service_price;
-
-              return {
-                service_name,
-                service_quantity,
-                service_price,
-                total_price: totalPrice,
-              };
-            })
-          );
-
-          return {
-            ...invoice,
-            client,
-            services: services.filter(Boolean), // Supprimer les services nulls
-          };
-        })
-      );
+      const formatedInvoices = await invoiceHistoryFormater(invoicesByYear);
 
       res.json(formatedInvoices);
     } catch (error) {

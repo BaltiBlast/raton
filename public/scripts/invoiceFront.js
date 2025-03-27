@@ -45,11 +45,13 @@ const invoiceFormInteraction = {
       details.addEventListener("toggle", async () => {
         if (!details.open) return;
         const year = details.getAttribute("data-invoice-year");
+        const loadingSpinner = document.getElementById(`loadingSpinner${year}`);
 
         // Si déjà chargé, ne pas refaire la requête
         if (details.dataset.loaded) return;
 
         try {
+          loadingSpinner.ariaBusy = true;
           const response = await fetch(`/invoices/${year}`);
           const invoices = await response.json();
 
@@ -81,6 +83,7 @@ const invoiceFormInteraction = {
           });
 
           details.dataset.loaded = true;
+          loadingSpinner.ariaBusy = false;
         } catch (error) {
           console.error("Erreur de chargement :", error);
         }
@@ -100,46 +103,51 @@ const invoiceFormInteraction = {
 
   createInvoiceTable: (invoices) => {
     const table = document.createElement("table");
-    table.classList.add("invoice-table");
 
-    table.innerHTML = `
-      <thead>
-        <tr>
-          <th>N° Facture</th>
-          <th>Client</th>
-          <th>Service</th>
-          <th>Quantité</th>
-          <th>Prix Unitaire (€)</th>
-          <th>Total (€)</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    `;
+    // Création de l'en-tête
+    const thead = document.createElement("thead");
+    const headerRow = document.createElement("tr");
 
-    const tbody = table.querySelector("tbody");
-
-    invoices.forEach((invoice) => {
-      invoice.services.forEach((service, index) => {
-        const row = document.createElement("tr");
-
-        if (index === 0) {
-          row.innerHTML += `
-            <td rowspan="${invoice.services.length}">${invoice.invoice_id}</td>
-            <td rowspan="${invoice.services.length}">${invoice.client.client_name}</td>
-          `;
-        }
-
-        row.innerHTML += `
-          <td>${service.service_name}</td>
-          <td>${service.service_quantity}</td>
-          <td>${service.service_price}</td>
-          <td>${service.total_price}</td>
-        `;
-
-        tbody.appendChild(row);
-      });
+    const headers = ["Clients", "N° Facture", "Total (€)", "Actions"];
+    headers.forEach((headerText) => {
+      const th = document.createElement("th");
+      th.textContent = headerText;
+      headerRow.appendChild(th);
     });
 
+    thead.appendChild(headerRow);
+    table.appendChild(thead);
+
+    // Création du corps de la table
+    const tbody = document.createElement("tbody");
+
+    invoices.forEach((invoice) => {
+      const { client } = invoice;
+      const { client_name } = client;
+      const totalPrice = invoice.services.reduce((sum, service) => sum + service.total_price, 0);
+
+      const row = document.createElement("tr");
+
+      const clientCell = document.createElement("td");
+      clientCell.textContent = client_name;
+      row.appendChild(clientCell);
+
+      const invoiceCell = document.createElement("td");
+      invoiceCell.textContent = "5";
+      row.appendChild(invoiceCell);
+
+      const totalCell = document.createElement("td");
+      totalCell.textContent = totalPrice.toFixed(2);
+      row.appendChild(totalCell);
+
+      const actionsCell = document.createElement("td");
+      actionsCell.textContent = "👁️";
+      row.appendChild(actionsCell);
+
+      tbody.appendChild(row);
+    });
+
+    table.appendChild(tbody);
     return table;
   },
 
