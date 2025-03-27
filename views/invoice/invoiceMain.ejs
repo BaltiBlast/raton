@@ -3,12 +3,18 @@
 <main>
   <form id="invoiceForm">
     <!-- Invoice Form -->
-    <%- include('invoiceForm.ejs') %>
+
+    <nav>
+      <ul>
+        <li><span data-tab="invoiceServicesTab" class="tab-button active-tab">Facturation</span></li>
+        <li><span data-tab="invoiceHistoryTab" class="tab-button">Historique</span></li>
+      </ul>
+    </nav>
 
     <hr />
 
     <!-- Services -->
-    <%- include('invoiceServicesTab.ejs') %>
+    <%- include('invoiceMakerTab.ejs') %>
 
     <!-- Invoice history -->
     <%- include('invoiceHistoryTab.ejs') %>

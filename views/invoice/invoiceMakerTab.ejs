@@ -1,0 +1,57 @@
+<section id="invoiceServicesTab" class="tab-content active">
+  <fieldset class="grid">
+    <!-- Client -->
+    <select id="selectClient" name="clientEmail" required>
+      <option selected disabled value="">Client</option>
+      <% if (clientsData) {%> <% clientsData.forEach(client => { %>
+      <option value="<%= client.client_id %>"><%= client.client_name %></option>
+      <% }) %><% } %>
+    </select>
+
+    <!-- Mois de facturation -->
+    <select id="selectMonth" name="invoiceMonth" required>
+      <option selected disabled value="">Mois</option>
+      <% months.forEach((month) => { %>
+      <option value="<%= month %>"><%= month %></option>
+      <% }); %>
+    </select>
+
+    <!-- Numéro de facture -->
+    <input id="inputInvoiceNumber" min="0" placeholder="N° Facture" type="number" name="invoiceNumber" required />
+
+    <!-- Générer facture -->
+    <button id="submitButton" type="button" onclick="showInvoicePreview()" disabled>Prévisualiser la facture</button>
+  </fieldset>
+
+  <table class="striped">
+    <thead>
+      <tr>
+        <th>Prestation</th>
+        <th>Prix</th>
+        <th>Nombre</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% if (services && services.length > 0) { %> <% services.forEach(service => { %>
+      <tr data-service-id="<%= service.service_id %>">
+        <td><%= service.service_name %></td>
+        <td><%= service.service_price %>€</td>
+        <td>
+          <input
+            class="margin-none"
+            type="number"
+            data-service-id="<%= service.service_id %>"
+            data-service-quantity
+            value="0"
+            min="0"
+            required
+          />
+        </td>
+      </tr>
+      <% }) %> <% } else { %>
+    </tbody>
+  </table>
+  <p class="txt-align-center">Tu n'as pas encore de prestations 😞..</p>
+  <p class="txt-align-center"><a href="/services">On remédie à ça ?</a> 😏</p>
+  <% } %>
+</section>
