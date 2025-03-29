@@ -1,6 +1,6 @@
 // ===== IMPORTS ===== //
 const { ClientsMapper } = require("../../models/index.mapper");
-const { formatAdress } = require("../../utils/genericMethods");
+const { formatAdress, userFullName } = require("../../utils/genericMethods");
 
 // ===== CONTROLLERS ===== //
 const clientsController = {
@@ -8,7 +8,12 @@ const clientsController = {
   // Method to display the clients page
   getClients: async (req, res) => {
     try {
-      const userId = req.session.user.user_id;
+      const { user_first_name, user_last_name, user_id } = req.session.user;
+      const userId = user_id;
+
+      const userData = { user_first_name, user_last_name };
+      const userName = userFullName(userData);
+
       const clients = await ClientsMapper.getUserClients(userId);
 
       // Format the adress of each client
@@ -18,7 +23,7 @@ const clientsController = {
         return { ...client, formattedAdress };
       });
 
-      res.render("clients", { showNavbar: true, clients: formattedClients, userId });
+      res.render("clients", { showNavbar: true, clients: formattedClients, userId, userName });
     } catch (error) {
       console.error("[ERROR getClients in clientsController.js] :", error);
     }
