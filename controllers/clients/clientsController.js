@@ -8,11 +8,18 @@ const clientsController = {
   // Method to display the clients page
   getClients: async (req, res) => {
     try {
-      const { user_first_name, user_last_name, user_id } = req.session.user;
+      const { user_first_name, user_last_name, user_id, user_adress, user_city_name, user_zip_code } = req.session.user;
       const userId = user_id;
 
       const userData = { user_first_name, user_last_name };
       const userName = userFullName(userData);
+
+      const userProps = {
+        userName,
+        userAdress: user_adress,
+        userCity: user_city_name,
+        userZipCode: user_zip_code,
+      };
 
       const clients = await ClientsMapper.getUserClients(userId);
 
@@ -23,7 +30,7 @@ const clientsController = {
         return { ...client, formattedAdress };
       });
 
-      res.render("clients", { showNavbar: true, clients: formattedClients, userId, userName });
+      res.render("clients", { showNavbar: true, clients: formattedClients, userId, userProps });
     } catch (error) {
       console.error("[ERROR getClients in clientsController.js] :", error);
     }
@@ -46,6 +53,10 @@ const clientsController = {
   postClientAdd: async (req, res) => {
     try {
       const clientData = req.body;
+
+      if (clientData.lastInvoiceNumber === "") {
+        clientData.lastInvoiceNumber = "0";
+      }
 
       // Create the client in the database
       await ClientsMapper.createClient(clientData);

@@ -3,10 +3,10 @@
 <main>
   <form action="/client-add" method="POST">
     <section class="grid">
-      <!-- RAISON SOCIALE -->
+      <!-- Company name -->
       <label>
         Raison sociale
-        <input type="text" name="clientName" placeholder="Entreprise / <%= userName %>" required />
+        <input type="text" name="clientName" placeholder="Entreprise / <%= userProps.userName %>" required />
       </label>
 
       <!-- Email -->
@@ -14,29 +14,36 @@
         Email
         <input name="email" placeholder="raton_braqueur@mail.com" required />
       </label>
+
+      <!-- Invoice number -->
+      <label>
+        Dernier numéro de facture
+        <abbr title="Si aucune facture n’a été émise pour ce client, ce champ peut rester vide.">ℹ️</abbr>
+        <input name="lastInvoiceNumber" placeholder="17" type="number" />
+      </label>
     </section>
 
     <section class="grid">
-      <!-- NOM RUE -->
+      <!-- Street name  -->
       <label class="label">
-        Nom de rue
-        <input name="adress" placeholder="5 Rue de la Banque" required />
+        Rue
+        <input name="adress" placeholder="<%= userProps.userAdress %>" required />
       </label>
 
-      <!-- VILLE -->
+      <!-- City name -->
       <label class="label">
         Ville
-        <input name="city" placeholder="Money" required />
+        <input name="city" placeholder="<%= userProps.userCity %>" required />
       </label>
 
-      <!-- CODE POSTAL -->
+      <!-- ZIP code -->
       <label class="label">
         Code postal
-        <input name="zipCode" placeholder="99999" required />
+        <input name="zipCode" placeholder="<%= userProps.userZipCode %>" required />
       </label>
     </section>
     <input type="hidden" name="userId" value="<%= userId %>" />
-    <button type="submit">Ajouter client</button>
+    <button type="submit">Ajouter un client</button>
   </form>
   <hr />
   <section class="overflow-auto">
@@ -72,7 +79,7 @@
           <article>
             <form action="/client-update" method="POST">
               <section class="grid">
-                <!-- RAISON SOCIALE -->
+                <!-- Company name -->
                 <label>
                   Entreprise ou Nom de famille
                   <input type="text" name="clientName" value="<%= client.client_name %>" required />
@@ -85,21 +92,20 @@
                 </label>
               </section>
 
-              <!-- ADRESSE -->
               <section class="grid">
-                <!-- RUE -->
+                <!-- Street name -->
                 <label>
                   Adresse
                   <input name="adress" value="<%= client.client_adress %>" required />
                 </label>
 
-                <!-- VILLE -->
+                <!-- City name -->
                 <label>
                   Ville
                   <input name="city" value="<%= client.client_city_name %>" required />
                 </label>
 
-                <!-- CODE POSTAL -->
+                <!-- ZIP code -->
                 <label>
                   Code postal
                   <input name="zipCode" value="<%= client.client_zip_code %>" required />

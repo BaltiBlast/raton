@@ -35,7 +35,7 @@ class ClientsMapper extends CoreMapper {
   // ------------------------------------------------------------------------------------ //
   // Mapper to create a new client
   async createClient(data) {
-    const { clientName, email, adress, city, zipCode, userId } = data;
+    const { clientName, email, adress, city, zipCode, userId, lastInvoiceNumber } = data;
 
     await this.db(this.tableName).create([
       {
@@ -47,6 +47,7 @@ class ClientsMapper extends CoreMapper {
           client_zip_code: zipCode,
           client_total_payment: "0",
           user_id: userId,
+          invoice_number: lastInvoiceNumber,
         },
       },
     ]);
