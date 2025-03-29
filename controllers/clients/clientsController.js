@@ -55,7 +55,7 @@ const clientsController = {
       const clientData = req.body;
 
       if (clientData.lastInvoiceNumber === "") {
-        clientData.lastInvoiceNumber = "0";
+        clientData.lastInvoiceNumber = 0;
       }
 
       // Create the client in the database

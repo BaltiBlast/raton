@@ -9,7 +9,6 @@ const invoiceMonth = document.getElementById("facture-month");
 const yearElement = document.getElementById("facture-year");
 const invoiceToSend = document.getElementById("invoiceToSend");
 const invoiceNumber = document.getElementById("invoice-number");
-const inputInvoiceNumber = document.getElementById("inputInvoiceNumber");
 
 let selectedClient = null;
 
@@ -18,10 +17,8 @@ const invoiceFormInteraction = {
     setPrice();
     setClientData();
     setInvoiceDate();
-    setInvoiceNumber();
     isClientSelected();
     isMonthSelected();
-    isInvoiceNumberEmpty();
     invoiceTabManagement();
     showInvoicePreview();
     closeInvoicePreview();
@@ -123,7 +120,7 @@ const invoiceFormInteraction = {
 
     invoices.forEach((invoice) => {
       const { client } = invoice;
-      const { client_name } = client;
+      const { client_name, invoice_number } = client;
       const totalPrice = invoice.services.reduce((sum, service) => sum + service.total_price, 0);
 
       const row = document.createElement("tr");
@@ -133,7 +130,7 @@ const invoiceFormInteraction = {
       row.appendChild(clientCell);
 
       const invoiceCell = document.createElement("td");
-      invoiceCell.textContent = "5";
+      invoiceCell.textContent = invoice_number;
       row.appendChild(invoiceCell);
 
       const totalCell = document.createElement("td");
@@ -190,20 +187,7 @@ const invoiceFormInteraction = {
   },
 
   // ------------------------------------------------------------------------------------ //
-  // Set the invoice number in the invoice preview
-  setInvoiceNumber: () => {
-    inputInvoiceNumber.addEventListener("change", function (element) {
-      const invoiceNumberValue = element.target.value;
-      if (invoiceNumberValue) {
-        invoiceNumber.textContent = invoiceNumberValue;
-      } else {
-        invoiceNumber.textContent = "Numéro de facture";
-      }
-    });
-  },
-
-  // ------------------------------------------------------------------------------------ //
-  // Set the invoice number in the invoice preview
+  // Set the invoice price in the invoice preview
   setPrice: () => {
     submitButton.addEventListener("click", function () {
       prestationPrice.innerHTML = "";
@@ -278,14 +262,7 @@ const invoiceFormInteraction = {
   checkFormValidity: () => {
     const isClientSelected = selectClient.value !== "";
     const isMonthSelected = selectMonth.value !== "";
-    const isInvoiceNumberEmpty = inputInvoiceNumber.value !== "";
-    submitButton.disabled = !(isClientSelected && isMonthSelected && isInvoiceNumberEmpty);
-  },
-
-  // ------------------------------------------------------------------------------------ //
-  // Check if input invoice number is empty
-  isInvoiceNumberEmpty: () => {
-    inputInvoiceNumber.addEventListener("input", checkFormValidity);
+    submitButton.disabled = !(isClientSelected && isMonthSelected);
   },
 
   // ------------------------------------------------------------------------------------ //
@@ -424,11 +401,9 @@ const {
   setPrice,
   setClientData,
   setInvoiceDate,
-  setInvoiceNumber,
   checkFormValidity,
   isMonthSelected,
   isClientSelected,
-  isInvoiceNumberEmpty,
   getClientDataById,
   switchTab,
   activateTab,
