@@ -1,28 +1,27 @@
 <%- include('../partials/head.ejs') %>
 
 <main>
+  <!-- Invoices navigation -->
+  <nav>
+    <ul>
+      <li><span data-tab="invoiceServicesTab" class="tab-button active-tab">Facturation</span></li>
+      <li><span data-tab="invoiceHistoryTab" class="tab-button">Historique</span></li>
+    </ul>
+  </nav>
+
+  <hr />
+
+  <!-- Invoice Form -->
   <form id="invoiceForm">
-    <!-- Invoice Form -->
-
-    <nav>
-      <ul>
-        <li><span data-tab="invoiceServicesTab" class="tab-button active-tab">Facturation</span></li>
-        <li><span data-tab="invoiceHistoryTab" class="tab-button">Historique</span></li>
-      </ul>
-    </nav>
-
-    <hr />
-
     <!-- Services -->
     <%- include('invoiceMakerTab.ejs') %>
-
-    <!-- Invoice history -->
-    <%- include('invoiceHistoryTab.ejs') %>
 
     <!-- Modal used to preview invoice -->
     <%- include('../modals/invoiceModal.ejs') %>
   </form>
 
+  <!-- Invoice history -->
+  <%- include('invoiceHistoryTab.ejs') %>
   <script src="/scripts/invoiceFront.js"></script>
 </main>
 
