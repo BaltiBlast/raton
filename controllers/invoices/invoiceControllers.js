@@ -61,11 +61,11 @@ const invoiceControllers = {
     try {
       const { clientId, servicesData, invoiceMonth } = req.body;
 
-      // Get client's informations + destructure them
+      // Get client's informations
       const client = await ClientsMapper.getClientById(clientId);
-      const { client_email } = client;
+      const { client_email, invoice_number } = client;
 
-      // Get user's informations + destructure them
+      // Get user's informations
       const userData = req.session.user;
 
       // Get services informations + formating them
@@ -83,10 +83,10 @@ const invoiceControllers = {
       const invoiceDate = `${invoiceMonth} ${invoiceYear}`;
 
       // Invoice Number
-      const invoiceNumber = "5";
+      const newInvoiceNumber = invoice_number + 1;
 
       // Invoice Title
-      const invoiceTitle = `Facture n°${invoiceNumber} - ${invoiceDate}`;
+      const invoiceTitle = `Facture n°${newInvoiceNumber} - ${invoiceDate}`;
 
       // Invoice total service price
       const totalPrice = servicesInformation.reduce((sum, service) => sum + Number(service.at(-1)), 0);
@@ -123,6 +123,13 @@ const invoiceControllers = {
 
       // Add the invoice's services to the database
       await addInvoiceServicesToDatabase(servicesData, invoiceId);
+
+      // Update the client's last invoice number
+      const clientData = {
+        recordId: client.recordId,
+        newInvoiceNumber: newInvoiceNumber,
+      };
+      await ClientsMapper.updateClient(clientData);
 
       // Send the response
       res.json({ reload: true, success: true });

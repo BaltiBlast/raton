@@ -18,7 +18,10 @@
       <!-- Invoice number -->
       <label>
         Dernier numéro de facture
-        <abbr title="Si aucune facture n’a été émise pour ce client, ce champ peut rester vide.">ℹ️</abbr>
+        <abbr
+          title="Si aucune facture n’a été émise pour ce client, ce champ peut rester vide. Le numéro ne sera plus modifiable"
+          >ℹ️</abbr
+        >
         <input name="lastInvoiceNumber" placeholder="17" type="number" />
       </label>
     </section>
@@ -54,6 +57,7 @@
           <th>👤 Client</th>
           <th>🏠 Adresse</th>
           <th>✉️ Email</th>
+          <th>📜 Facture</th>
           <th>⚙️ Actions</th>
         </tr>
       </thead>
@@ -63,6 +67,7 @@
           <td><%= client.client_name %></td>
           <td><%= client.formattedAdress %></td>
           <td><%= client.client_email %></td>
+          <td><%= client.invoice_number %></td>
           <td>
             <form id="form-delete-client" action="/client-delete" method="post" class="grid">
               <input type="hidden" name="recordId" value="<%= client.recordId %>" />

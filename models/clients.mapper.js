@@ -56,16 +56,21 @@ class ClientsMapper extends CoreMapper {
   // ------------------------------------------------------------------------------------ //
   // Mapper to update a client
   async updateClient(data) {
-    const { recordId, clientName, email, adress, city, zipCode, newTotalPrice } = data;
+    const { recordId, clientName, email, adress, city, zipCode, newTotalPrice, newInvoiceNumber } = data;
 
-    await this.db(this.tableName).update(recordId, {
+    const fields = {
       client_name: clientName,
       client_email: email,
       client_adress: adress,
       client_city_name: city,
       client_zip_code: zipCode,
       client_total_payment: newTotalPrice,
-    });
+      invoice_number: newInvoiceNumber,
+    };
+
+    const fieldsToUpdate = Object.fromEntries(Object.entries(fields).filter(([_, value]) => value !== undefined));
+
+    await this.db(this.tableName).update(recordId, fieldsToUpdate);
   }
 
   // ------------------------------------------------------------------------------------ //
