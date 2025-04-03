@@ -33,8 +33,29 @@ const invoiceControllers = {
 
       // Get user data and formating it
       const user = await UserMapper.getUserById(userId);
-      const { user_email, user_last_name, user_first_name, user_adress, user_city_name, user_zip_code } = user;
-      const userData = { user_email, user_last_name, user_first_name, user_adress, user_city_name, user_zip_code };
+      const {
+        user_email,
+        user_last_name,
+        user_first_name,
+        user_adress,
+        user_city_name,
+        user_zip_code,
+        user_bank_name,
+        user_iban,
+        user_bic_swift,
+      } = user;
+
+      const userData = {
+        user_email,
+        user_last_name,
+        user_first_name,
+        user_adress,
+        user_city_name,
+        user_zip_code,
+        user_bank_name,
+        user_iban,
+        user_bic_swift,
+      };
 
       // Get services
       const services = await ServicesMapper.getUserServices(userId);

@@ -29,20 +29,21 @@
             <tr>
               <th>Prestation</th>
               <th>Quantity</th>
-              <th>Prix unité</th>
-              <th>Prix total</th>
+              <th>Prix unité (€)</th>
+              <th>Prix Total (€)</th>
             </tr>
           </thead>
           <tbody id="modalServicesData"></tbody>
         </table>
+        <small>TVA non applicable art.293 B du CGI</small>
       </section>
 
       <section>
         <p>Informations bancaire</p>
         <div class="flex-direction-column">
-          <span>IBAN : FR76 1610 6840 0696 0044 2209 882</span>
-          <span>BIC / SWIFT : AGRIFRPP361</span>
-          <span>Banque: Crédit Agricole</span>
+          <span><%= userData.user_iban %></span>
+          <span><%= userData.user_bic_swift %></span>
+          <span><%= userData.user_bank_name %></span>
         </div>
       </section>
     </main>
