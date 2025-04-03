@@ -1,0 +1,54 @@
+<dialog id="modalInvoicePreview">
+  <article>
+    <header>Récapitulatif avant envoi :</header>
+    <main>
+      <head>
+        <h4 class="txt-align-center">
+          <b><u>Facture n°3 - Juillet 2025</u></b>
+        </h4>
+      </head>
+      <section class="grid">
+        <div>
+          <b>Emise par :</b>
+          <div class="flex-direction-column">
+            <span><%= userData.user_first_name %> <%= userData.user_last_name %></span>
+            <span><%= userData.user_adress %></span>
+            <span><%= userData.user_city_name %> - <%= userData.user_zip_code %></span>
+            <span><%= userData.user_email %></span>
+          </div>
+        </div>
+        <div>
+          <b>À l'attention de :</b>
+          <div id="modalClientData" class="flex-direction-column"></div>
+        </div>
+      </section>
+
+      <section>
+        <table>
+          <thead>
+            <tr>
+              <th>Prestation</th>
+              <th>Quantity</th>
+              <th>Prix unité</th>
+              <th>Prix total</th>
+            </tr>
+          </thead>
+          <tbody id="modalServicesData"></tbody>
+        </table>
+      </section>
+
+      <section>
+        <p>Informations bancaire</p>
+        <div class="flex-direction-column">
+          <span>IBAN : FR76 1610 6840 0696 0044 2209 882</span>
+          <span>BIC / SWIFT : AGRIFRPP361</span>
+          <span>Banque: Crédit Agricole</span>
+        </div>
+      </section>
+    </main>
+    <footer>
+      <button id="sendEmailButton">Envoyer la rançon</button>
+      <button onclick="closeInvoicePreview()" type="button">revoir les termes</button>
+    </footer>
+  </article>
+</dialog>

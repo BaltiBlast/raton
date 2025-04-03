@@ -59,7 +59,7 @@ const invoiceControllers = {
   // Method to send the invoice by email
   postSendInvoiceEmail: async (req, res) => {
     try {
-      const { clientId, servicesData, invoiceMonth } = req.body;
+      const { clientId, servicesDataSelected, invoiceMonth } = req.body;
 
       // Get client's informations
       const client = await ClientsMapper.getClientById(clientId);
@@ -69,7 +69,7 @@ const invoiceControllers = {
       const userData = req.session.user;
 
       // Get services informations + formating them
-      const servicesInformation = await formatingInvoiceServices(servicesData);
+      const servicesInformation = await formatingInvoiceServices(servicesDataSelected);
 
       //  User informations for the invoice
       const userInformations = formatingInvoiceUserInformations(userData);
@@ -122,7 +122,7 @@ const invoiceControllers = {
       const invoiceId = await InvoicesMapper.addInvoice(invoiceData);
 
       // Add the invoice's services to the database
-      await addInvoiceServicesToDatabase(servicesData, invoiceId);
+      await addInvoiceServicesToDatabase(servicesDataSelected, invoiceId);
 
       // Update the client's last invoice number
       const clientData = {

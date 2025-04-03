@@ -17,7 +17,7 @@
     </select>
 
     <!-- Générer facture -->
-    <button id="submitButton" type="button" onclick="showInvoicePreview()" disabled>Prévisualiser la facture</button>
+    <button id="invoicePreviewButton" type="button" disabled>Prévisualiser la facture</button>
   </fieldset>
 
   <table class="striped">
@@ -37,8 +37,10 @@
           <input
             class="margin-none"
             type="number"
-            data-service-id="<%= service.service_id %>"
-            data-service-quantity
+            service-id="<%= service.service_id %>"
+            name="<%= service.service_name %>"
+            service-price="<%= service.service_price %>"
+            service-quantity
             value="0"
             min="0"
             required

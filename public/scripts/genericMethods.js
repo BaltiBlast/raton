@@ -1,24 +1,15 @@
 const genericMethods = {
   initGenericMethods: () => {},
 
-  openModal: (id) => {
-    const modal = document.getElementById(id);
+  openModal: (modal) => {
     modal.showModal();
   },
 
-  closeModal: (id) => {
-    const modal = document.getElementById(id);
+  closeModal: (modal) => {
     modal.close();
-  },
-
-  showInvoicePreview: (id) => {
-    const detailsRow = document.getElementById(id);
-    if (detailsRow) {
-      detailsRow.classList.toggle("is-hidden");
-    }
   },
 };
 
-const { initGenericMethods, closeModal, openModal, toggleDetails } = genericMethods;
+const { initGenericMethods, closeModal, openModal } = genericMethods;
 
 document.addEventListener("DOMContentLoaded", initGenericMethods());

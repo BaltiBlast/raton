@@ -1,36 +1,116 @@
-const selectClient = document.getElementById("selectClient");
-const selectMonth = document.getElementById("selectMonth");
-const invoiceForm = document.getElementById("invoiceForm");
-const submitButton = document.getElementById("submitButton");
-const prestationPrice = document.getElementById("prestation-price");
-const totalPrice = document.getElementById("totalPrice");
-const sendButton = document.getElementById("send-button");
-const invoiceMonth = document.getElementById("facture-month");
-const yearElement = document.getElementById("facture-year");
-const invoiceToSend = document.getElementById("invoiceToSend");
-const invoiceNumber = document.getElementById("invoice-number");
-
-let selectedClient = null;
-
 const invoiceFormInteraction = {
+  selectClient: document.getElementById("selectClient"),
+  selectMonth: document.getElementById("selectMonth"),
+  invoiceForm: document.getElementById("invoiceForm"),
+  modalInvoicePreview: document.getElementById("modalInvoicePreview"),
+  invoicePreviewButton: document.getElementById("invoicePreviewButton"),
+  sendEmailButton: document.getElementById("sendEmailButton"),
+  clientDataSelected: null,
+  servicesDataSelected: [],
+
   init: () => {
-    setPrice();
-    setClientData();
-    setInvoiceDate();
     isClientSelected();
     isMonthSelected();
     invoiceTabManagement();
-    showInvoicePreview();
-    closeInvoicePreview();
     getInvoiceUserByYear();
+    invoiceModalPreview();
+    getClientDataById();
+    getSelectedServices();
+  },
+
+  // ------------------------------------------------------------------------------------ //
+  // Show invoice preview modal with data
+  invoiceModalPreview: async () => {
+    invoicePreviewButton.addEventListener("click", function () {
+      genericMethods.openModal(modalInvoicePreview);
+      setClientDataInvoicePreview();
+      setServicesDataInvoicePreview();
+    });
+  },
+
+  // ------------------------------------------------------------------------------------ //
+  // Set client data in the invoice preview modal
+  setClientDataInvoicePreview: () => {
+    const { client_name, client_adress, client_zip_code, client_city_name, client_email } = clientDataSelected;
+    const clientCity = `${client_city_name} - ${client_zip_code}`;
+    const clientData = [client_name, client_adress, clientCity, client_email];
+
+    const clientDataContainer = document.getElementById("modalClientData");
+    clientDataContainer.innerHTML = "";
+
+    for (const client of clientData) {
+      const span = document.createElement("span");
+      span.textContent = client;
+      clientDataContainer.appendChild(span);
+    }
+  },
+
+  // ------------------------------------------------------------------------------------ //
+  // Set services data in the invoice preview modal
+  setServicesDataInvoicePreview: () => {
+    const servicesDataContainer = document.getElementById("modalServicesData");
+    servicesDataContainer.innerHTML = "";
+
+    let totalInvoicePrice = 0;
+
+    for (const service of servicesDataSelected) {
+      const tr = document.createElement("tr");
+
+      // Service name
+      const serviceName = document.createElement("td");
+      serviceName.textContent = service.serviceName;
+
+      // Service quantity
+      const serviceQuantity = document.createElement("td");
+      serviceQuantity.textContent = service.serviceQuantity;
+
+      // Service price
+      const servicePrice = document.createElement("td");
+      servicePrice.textContent = service.servicePrice;
+
+      // Service total price
+      const serviceTotalPrice = document.createElement("td");
+      const serviceTotalPriceValue = service.servicePrice * service.serviceQuantity;
+      serviceTotalPrice.textContent = serviceTotalPriceValue;
+
+      totalInvoicePrice += serviceTotalPriceValue;
+
+      tr.append(serviceName, serviceQuantity, servicePrice, serviceTotalPrice);
+
+      servicesDataContainer.appendChild(tr);
+    }
+
+    const totalRow = document.createElement("tr");
+
+    const emptyCell = document.createElement("td");
+    emptyCell.setAttribute("colspan", "3");
+
+    const totalAmount = document.createElement("td");
+    totalAmount.textContent = totalInvoicePrice;
+
+    totalRow.append(emptyCell, totalAmount);
+
+    servicesDataContainer.appendChild(totalRow);
   },
 
   // ------------------------------------------------------------------------------------ //
   // Get the client data by its ID
-  getClientDataById: async (clientId) => {
-    const response = await fetch(`/client/${clientId}`);
-    const data = await response.json();
-    selectedClient = data;
+  getClientDataById: () => {
+    selectClient.addEventListener("change", async (client) => {
+      const clientId = client.target.value;
+
+      if (clientId) {
+        try {
+          const response = await fetch(`/client/${clientId}`);
+          const data = await response.json();
+          clientDataSelected = data;
+        } catch (error) {
+          console.log("Error fetching client data:", error);
+        }
+      } else {
+        clientDataSelected = null;
+      }
+    });
   },
 
   // ------------------------------------------------------------------------------------ //
@@ -88,6 +168,8 @@ const invoiceFormInteraction = {
     });
   },
 
+  // ------------------------------------------------------------------------------------ //
+  // Group invoices by month for display in history
   groupInvoicesByMonth: (invoices) => {
     return invoices.reduce((acc, invoice) => {
       if (!acc[invoice.invoice_month]) {
@@ -98,6 +180,8 @@ const invoiceFormInteraction = {
     }, {});
   },
 
+  // ------------------------------------------------------------------------------------ //
+  // Create invoice table for history
   createInvoiceTable: (invoices) => {
     const table = document.createElement("table");
 
@@ -149,120 +233,11 @@ const invoiceFormInteraction = {
   },
 
   // ------------------------------------------------------------------------------------ //
-  // Set the client data in the invoice preview
-  setClientData: () => {
-    selectClient.addEventListener("change", async (element) => {
-      const clientId = element.target.value;
-      await getClientDataById(clientId);
-
-      if (selectedClient) {
-        document.getElementById("client-name").textContent = selectedClient.client_name;
-        document.getElementById("client-adress").textContent = selectedClient.client_adress;
-        document.getElementById("client-email").textContent = selectedClient.client_email;
-
-        const formatedAdress = `${selectedClient.client_city_name} - ${selectedClient.client_zip_code}`;
-        document.getElementById("client-city").textContent = formatedAdress;
-      } else {
-        document.getElementById("client-name").textContent = "";
-        document.getElementById("client-adress").textContent = "";
-        document.getElementById("client-city").textContent = "";
-        document.getElementById("client-email").textContent = "";
-      }
-    });
-  },
-
-  // ------------------------------------------------------------------------------------ //
-  // Set the invoice date in the invoice preview
-  setInvoiceDate: () => {
-    selectMonth.addEventListener("change", function (element) {
-      const selectedMonth = element.target.value;
-      if (selectedMonth) {
-        yearElement.textContent = new Date().getFullYear();
-        invoiceMonth.textContent = selectedMonth;
-      } else {
-        document.getElementById("facture-month").textContent = "Mois";
-        document.getElementById("facture-year").textContent = "Année";
-      }
-    });
-  },
-
-  // ------------------------------------------------------------------------------------ //
-  // Set the invoice price in the invoice preview
-  setPrice: () => {
-    submitButton.addEventListener("click", function () {
-      prestationPrice.innerHTML = "";
-      const servicesData = [];
-
-      const rows = document.querySelectorAll("table tbody tr");
-
-      rows.forEach((row) => {
-        const serviceId = row.getAttribute("data-service-id");
-
-        if (serviceId) {
-          const quantityInput = row.querySelector('input[name="services[' + serviceId + '][quantity]"]');
-          const nameInput = row.querySelector('input[name="services[' + serviceId + '][name]"]');
-          const priceInput = row.querySelector('input[name="services[' + serviceId + '][price]"]');
-
-          if (quantityInput.value > 0) {
-            const serviceData = {
-              serviceId: serviceId,
-              name: nameInput ? nameInput.value : "",
-              price: priceInput ? priceInput.value : "",
-              quantity: quantityInput ? quantityInput.value : 0,
-            };
-            servicesData.push(serviceData);
-          }
-        }
-      });
-
-      servicesData.forEach((element) => {
-        const tr = document.createElement("tr");
-
-        const serviceName = document.createElement("td");
-        serviceName.textContent = element.name;
-        tr.appendChild(serviceName);
-
-        const servicePrice = document.createElement("td");
-        servicePrice.textContent = element.price;
-        tr.appendChild(servicePrice);
-
-        const serviceQuantity = document.createElement("td");
-        serviceQuantity.textContent = element.quantity;
-        tr.appendChild(serviceQuantity);
-
-        const serviceTotal = document.createElement("td");
-        serviceTotal.textContent = element.price * element.quantity;
-        tr.appendChild(serviceTotal);
-
-        prestationPrice.appendChild(tr);
-      });
-
-      const totalPriceServices = servicesData.reduce((sum, element) => {
-        return sum + parseFloat(element.price) * parseInt(element.quantity);
-      }, 0);
-
-      totalPrice.textContent = totalPriceServices;
-    });
-  },
-
-  // ------------------------------------------------------------------------------------ //
-  // Show invoice preview
-  showInvoicePreview: () => {
-    document.getElementById("invoiceModal").showModal();
-  },
-
-  // ------------------------------------------------------------------------------------ //
-  // Disable button to generate invoice if form is not valid
-  closeInvoicePreview: () => {
-    document.getElementById("invoiceModal").close();
-  },
-
-  // ------------------------------------------------------------------------------------ //
   // Disable button to generate invoice if form is not valid
   checkFormValidity: () => {
     const isClientSelected = selectClient.value !== "";
     const isMonthSelected = selectMonth.value !== "";
-    submitButton.disabled = !(isClientSelected && isMonthSelected);
+    invoicePreviewButton.disabled = !(isClientSelected && isMonthSelected);
   },
 
   // ------------------------------------------------------------------------------------ //
@@ -278,24 +253,37 @@ const invoiceFormInteraction = {
   },
 
   // ------------------------------------------------------------------------------------ //
-  // Get all services
+  // Get all services selected by the user
   getSelectedServices: () => {
-    const selectedServices = [];
+    const serviceInputs = document.querySelectorAll("input[service-quantity]");
 
-    document.querySelectorAll("tr[data-service-id]").forEach((row) => {
-      const quantityInput = row.querySelector("[data-service-quantity]");
-      const quantity = parseInt(quantityInput.value, 10);
-      const serviceId = parseInt(row.dataset.serviceId);
+    serviceInputs.forEach((input) => {
+      input.addEventListener("change", function () {
+        const serviceId = parseInt(input.getAttribute("service-id"));
+        const serviceName = input.getAttribute("name");
+        const servicePrice = parseInt(input.getAttribute("service-price"));
+        const quantity = parseInt(input.value) || 0;
 
-      if (quantity > 0) {
-        selectedServices.push({
+        const data = {
           serviceId: serviceId,
           serviceQuantity: quantity,
-        });
-      }
-    });
+          serviceName: serviceName,
+          servicePrice: servicePrice,
+        };
 
-    return selectedServices;
+        // Check if the service is already in the array
+        const isExistingIndex = servicesDataSelected.findIndex((service) => service.serviceId === serviceId);
+
+        // If the quantity is greater than 0, update the quantity or remove the service
+        if (quantity > 0 && isExistingIndex !== -1) {
+          servicesDataSelected[isExistingIndex].serviceQuantity = quantity;
+        } else if (quantity === 0 && isExistingIndex !== -1) {
+          servicesDataSelected.splice(isExistingIndex, 1);
+        } else {
+          servicesDataSelected.push(data);
+        }
+      });
+    });
   },
 
   // ------------------------------------------------------------------------------------ //
@@ -304,26 +292,14 @@ const invoiceFormInteraction = {
     invoiceForm.addEventListener("submit", async function (event) {
       event.preventDefault();
 
-      const { client_id } = selectedClient;
-      // const formatedDate = `${invoiceMonth.textContent} ${yearElement.textContent}`;
-      const date = invoiceMonth.textContent;
-      // const invoiceDbData = {
-      //   invoiceMonth: invoiceMonth.textContent,
-      //   invoiceYear: yearElement.textContent,
-      //   invoiceIncome: totalPrice.textContent,
-      //   invoiceClient: client_email,
-      //   invoiceClientId: client_id,
-      // };
-
-      const servicesData = getSelectedServices();
+      const { client_id } = clientDataSelected;
+      const date = selectMonth.value;
 
       const data = {
         clientId: client_id,
         invoiceMonth: date,
-        servicesData,
+        servicesDataSelected,
       };
-
-      sendButton.classList.add("is-loading");
 
       fetch("/invoice-send-email", {
         method: "POST",
@@ -334,32 +310,7 @@ const invoiceFormInteraction = {
       })
         .then((response) => response.json())
         .then((data) => {
-          if (data.success) {
-            const base64Data = pdfInvoice.split(",")[1];
-            const binaryData = atob(base64Data);
-            const arrayBuffer = new Uint8Array(binaryData.length);
-
-            for (let i = 0; i < binaryData.length; i++) {
-              arrayBuffer[i] = binaryData.charCodeAt(i);
-            }
-
-            const blob = new Blob([arrayBuffer], { type: "application/pdf" });
-
-            const clientName = document.getElementById("client-name").textContent;
-
-            // Créer un lien de téléchargement
-            const downloadLink = document.createElement("a");
-            downloadLink.href = URL.createObjectURL(blob);
-            downloadLink.download = `facture_${clientName}_${formatedDate}_n°${invoiceNumber.textContent}.pdf`;
-
-            // Simuler un clic pour télécharger
-            document.body.appendChild(downloadLink);
-            downloadLink.click();
-            document.body.removeChild(downloadLink);
-          }
-
           if (data.reload) {
-            sendButton.classList.remove("is-loading");
             location.reload();
           }
         });
@@ -398,9 +349,7 @@ const invoiceFormInteraction = {
 };
 
 const {
-  setPrice,
-  setClientData,
-  setInvoiceDate,
+  invoiceModalPreview,
   checkFormValidity,
   isMonthSelected,
   isClientSelected,
@@ -409,12 +358,20 @@ const {
   activateTab,
   deactivateTabs,
   invoiceTabManagement,
-  showInvoicePreview,
-  closeInvoicePreview,
   getSelectedServices,
   getInvoiceUserByYear,
   groupInvoicesByMonth,
   createInvoiceTable,
+  setServicesDataInvoicePreview,
+  setClientDataInvoicePreview,
+  servicesDataSelected,
+  selectClient,
+  selectMonth,
+  invoiceForm,
+  modalInvoicePreview,
+  invoicePreviewButton,
 } = invoiceFormInteraction;
+
+let { clientDataSelected } = invoiceFormInteraction;
 
 document.addEventListener("DOMContentLoaded", invoiceFormInteraction.init());

@@ -1,6 +1,9 @@
 <%- include('../partials/head.ejs') %>
 
 <main>
+  <!-- Modal used to preview invoice -->
+  <%- include('invoiceModalPreview.ejs') %>
+
   <!-- Invoices navigation -->
   <nav>
     <ul>
@@ -8,20 +11,17 @@
       <li><span data-tab="invoiceHistoryTab" class="tab-button">Historique</span></li>
     </ul>
   </nav>
-
   <hr />
+
+  <!-- Invoice history -->
+  <%- include('invoiceHistoryTab.ejs') %>
 
   <!-- Invoice Form -->
   <form id="invoiceForm">
     <!-- Services -->
     <%- include('invoiceMakerTab.ejs') %>
-
-    <!-- Modal used to preview invoice -->
-    <%- include('../modals/invoiceModal.ejs') %>
   </form>
 
-  <!-- Invoice history -->
-  <%- include('invoiceHistoryTab.ejs') %>
   <script src="/scripts/invoiceFront.js"></script>
 </main>
 
