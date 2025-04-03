@@ -34,7 +34,8 @@ class UserMapper extends CoreMapper {
   // ------------------------------------------------------------------------------------ //
   // Mapper to update user data
   async updateUser(user) {
-    const { lastName, firstName, email, adress, city, zipCode, legalForm, siret, recordId } = user;
+    const { lastName, firstName, email, adress, city, zipCode, legalForm, siret, bankName, bicSwift, iban, recordId } =
+      user;
 
     await this.db(this.tableName).update(recordId, {
       user_first_name: firstName,
@@ -45,6 +46,9 @@ class UserMapper extends CoreMapper {
       user_zip_code: zipCode,
       user_siret: siret,
       user_email: email,
+      user_bank_name: bankName,
+      user_iban: iban,
+      user_bic_swift: bicSwift,
     });
   }
 
