@@ -2,60 +2,86 @@
 
 <section>
   <form class="mar-bot" action="/profile-update" method="POST">
+    <h4>Indentité</h4>
     <!-- IDENTITE -->
-    <div class="control columns is-3">
+    <div class="grid">
       <!-- PRENOM -->
-      <div class="column field">
+      <div>
         <label class="label">Prénom</label>
-        <input class="input is-large" name="lastName" value="<%= user.user_last_name %>" type="text" required />
+        <input class="input" name="lastName" value="<%= user.user_last_name %>" type="text" required />
       </div>
 
       <!-- NOM DE FAMILLE -->
-      <div class="column field">
+      <div>
         <label class="label">Nom de famille</label>
-        <input class="input is-large" name="firstName" value="<%= user.user_first_name %>" required />
+        <input class="input" name="firstName" value="<%= user.user_first_name %>" required />
       </div>
 
       <!-- EEMAIL -->
-      <div class="column field">
+      <div>
         <label class="label">Email</label>
-        <input class="input is-large" name="email" value="<%= user.user_email%>" required />
+        <input class="input" name="email" value="<%= user.user_email%>" required />
       </div>
     </div>
 
     <!-- ADRESSE -->
-    <div class="control columns is-3">
+    <div class="grid">
       <!-- RUE -->
-      <div class="column field">
+      <div>
         <label class="label">Rue</label>
-        <input class="input is-large" name="adress" value="<%= user.user_adress%>" type="text" required />
+        <input class="input" name="adress" value="<%= user.user_adress%>" type="text" required />
       </div>
 
       <!-- VILLE -->
-      <div class="column field">
+      <div>
         <label class="label">Ville</label>
-        <input class="input is-large" name="city" value="<%= user.user_city_name%>" required />
+        <input class="input" name="city" value="<%= user.user_city_name%>" required />
       </div>
 
       <!-- CODE POSTAL -->
-      <div class="column field">
+      <div>
         <label class="label">Code postal</label>
-        <input class="input is-large" name="zipCode" value="<%= user.user_zip_code%>" required />
+        <input class="input" name="zipCode" value="<%= user.user_zip_code%>" required />
       </div>
     </div>
 
-    <!-- ADRESSE -->
-    <div class="control columns is-3">
+    <hr />
+    <h4>Statut</h4>
+    <!-- LEGAL FORM -->
+    <div class="grid">
       <!-- RUE -->
-      <div class="column field">
+      <div>
         <label class="label">Forme juridique</label>
-        <input class="input is-large" name="legalForm" value="<%= user.legal_form%>" type="text" required />
+        <input class="input" name="legalForm" value="<%= user.legal_form%>" type="text" required />
       </div>
 
       <!-- SIRET -->
-      <div class="column field">
+      <div>
         <label class="label">SIRET</label>
-        <input class="input is-large" name="siret" value="<%= user.user_siret%>" required />
+        <input class="input" name="siret" value="<%= user.user_siret%>" required />
+      </div>
+    </div>
+
+    <hr />
+    <h4>Banque</h4>
+    <!-- BANK DETAILS -->
+    <div class="grid">
+      <!-- BANK NAME -->
+      <div>
+        <label class="label">Banque</label>
+        <input class="input" name="bankName" value="<%= user.user_bank_name%>" required />
+      </div>
+
+      <!-- IBAN -->
+      <div>
+        <label class="label">RIB</label>
+        <input class="input" name="iban" value="<%= user.user_iban%>" required />
+      </div>
+
+      <!-- IBAN -->
+      <div>
+        <label class="label">BIC/SWIFT</label>
+        <input class="input" name="bicSwift" value="<%= user.user_bic_swift%>" required />
       </div>
     </div>
 
