@@ -4,6 +4,8 @@ const invoiceFormInteraction = {
   invoiceForm: document.getElementById("invoiceForm"),
   modalInvoicePreview: document.getElementById("modalInvoicePreview"),
   invoicePreviewButton: document.getElementById("invoicePreviewButton"),
+  invoicePreviewCloseButton: document.getElementById("invoicePreviewCloseButton"),
+  sendInvoiceButton: document.getElementById("sendInvoiceButton"),
   sendEmailButton: document.getElementById("sendEmailButton"),
   clientDataSelected: null,
   servicesDataSelected: [],
@@ -13,18 +15,26 @@ const invoiceFormInteraction = {
     isMonthSelected();
     invoiceTabManagement();
     getInvoiceUserByYear();
-    invoiceModalPreview();
+    openInvoiceModalPreview();
     getClientDataById();
     getSelectedServices();
+    closeInvoiceModalPreview();
+    triggerSendInvoiceButton();
   },
 
   // ------------------------------------------------------------------------------------ //
   // Show invoice preview modal with data
-  invoiceModalPreview: async () => {
+  openInvoiceModalPreview: async () => {
     invoicePreviewButton.addEventListener("click", function () {
       genericMethods.openModal(modalInvoicePreview);
       setClientDataInvoicePreview();
       setServicesDataInvoicePreview();
+    });
+  },
+
+  closeInvoiceModalPreview: () => {
+    invoicePreviewCloseButton.addEventListener("click", function () {
+      genericMethods.closeModal(modalInvoicePreview);
     });
   },
 
@@ -288,33 +298,37 @@ const invoiceFormInteraction = {
 
   // ------------------------------------------------------------------------------------ //
   // Send invoice by email
-  sendEmail: () => {
-    invoiceForm.addEventListener("submit", async function (event) {
-      event.preventDefault();
+  triggerSendInvoiceButton: () => {
+    sendInvoiceButton.addEventListener("click", sendEmail);
+  },
 
-      const { client_id } = clientDataSelected;
-      const date = selectMonth.value;
+  // ------------------------------------------------------------------------------------ //
+  // Send invoice by email
+  sendEmail: async (event) => {
+    event.preventDefault();
 
-      const data = {
-        clientId: client_id,
-        invoiceMonth: date,
-        servicesDataSelected,
-      };
+    const { client_id } = clientDataSelected;
+    const date = selectMonth.value;
 
-      fetch("/invoice-send-email", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          if (data.reload) {
-            location.reload();
-          }
-        });
-    });
+    const data = {
+      clientId: client_id,
+      invoiceMonth: date,
+      servicesDataSelected,
+    };
+
+    fetch("/invoice-send-email", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.reload) {
+          location.reload();
+        }
+      });
   },
 
   // ------------------------------------------------------------------------------------ //
@@ -349,7 +363,7 @@ const invoiceFormInteraction = {
 };
 
 const {
-  invoiceModalPreview,
+  openInvoiceModalPreview,
   checkFormValidity,
   isMonthSelected,
   isClientSelected,
@@ -364,12 +378,17 @@ const {
   createInvoiceTable,
   setServicesDataInvoicePreview,
   setClientDataInvoicePreview,
+  closeInvoiceModalPreview,
+  triggerSendInvoiceButton,
+  sendEmail,
+  sendInvoiceButton,
   servicesDataSelected,
   selectClient,
   selectMonth,
   invoiceForm,
   modalInvoicePreview,
   invoicePreviewButton,
+  invoicePreviewCloseButton,
 } = invoiceFormInteraction;
 
 let { clientDataSelected } = invoiceFormInteraction;
