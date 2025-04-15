@@ -68,6 +68,13 @@ const invoiceControllersMethods = {
   },
 
   // ------------------------------------------------------------------------------------ //
+  // Return a string with the user bank details formated for the invoice
+  formatingUserBankDetails: (userData) => {
+    const { user_bank_name, user_iban, user_bic_swift } = userData;
+    return `Banque : ${user_bank_name}\nIBAN : ${user_iban}\nBIC/SWIFT : ${user_bic_swift}`;
+  },
+
+  // ------------------------------------------------------------------------------------ //
   // Return a string with the user informations formated for the invoice
   formatingInvoiceUserInformations: (userData) => {
     const fullName = userFullName(userData);

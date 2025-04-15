@@ -14,6 +14,7 @@ const {
   sendInvoiceEmail,
   addInvoiceServicesToDatabase,
   invoiceHistoryFormater,
+  formatingUserBankDetails,
 } = require("./invoiceControllersMethods");
 
 // ===== CONTROLLERS ===== //
@@ -112,6 +113,9 @@ const invoiceControllers = {
       // Invoice total service price
       const totalPrice = servicesInformation.reduce((sum, service) => sum + Number(service.at(-1)), 0);
 
+      // Payment details
+      const paymentDetails = formatingUserBankDetails(userData);
+
       // Dynamic PDF invoice data
       const inputs = [
         {
@@ -120,7 +124,7 @@ const invoiceControllers = {
           clientInformations: clientInformations,
           servicesInformation: servicesInformation,
           totalPrice: totalPrice.toString(),
-          paymentData: `Crédit Agricole\nIBAN : FR76 0000 0000 0000 0000 0000 000\nBIC / SWIFT : AGRIFRPP361`,
+          paymentDetails: paymentDetails,
         },
       ];
 

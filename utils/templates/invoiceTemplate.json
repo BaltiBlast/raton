@@ -4,7 +4,7 @@
       {
         "name": "invoiceTitle",
         "type": "text",
-        "content": "Facture n°12345 - Février 2025",
+        "content": "",
         "position": { "x": 20.139999999999986, "y": 20 },
         "width": 169.86,
         "height": 10.05,
@@ -47,7 +47,7 @@
       },
       {
         "type": "text",
-        "content": "Henry Marie\n95 Boulevard Saint Symphorien\nLongeville Lès Metz - 57050\nhenry.marie@mail.com",
+        "content": "",
         "position": { "x": 20, "y": 50 },
         "width": 85,
         "height": 30,
@@ -89,7 +89,7 @@
       {
         "type": "text",
         "position": { "x": 104.74, "y": 50 },
-        "content": "Fougeray Florian\n15 Boulevard Saint Symphorien\nLongeville lès Metz - 57050\nfougeray.florian@gmail.com",
+        "content": "",
         "width": 85,
         "height": 30.16,
         "rotate": 0,
@@ -111,7 +111,7 @@
         "position": { "x": 20, "y": 84.47 },
         "width": 170,
         "height": 48.4672,
-        "content": "[[\"Squats\",\"1\",\"5\",\"5\"],[\"Dos\",\"2\",\"10\",\"20\"],[\"Bras\",\"1\",\"10\",\"10\"]]",
+        "content": "",
         "showHead": true,
         "head": ["Prestation", "Quantité", "Prix unitaire (€)", "Prix total (€)"],
         "headWidthPercentages": [37.794117647058826, 16.617647058823525, 24.70588235294118, 20.882352941176467],
@@ -192,17 +192,17 @@
         "fontName": "Roboto"
       },
       {
-        "name": "TVA art.",
+        "name": "paymentDetails",
         "type": "text",
-        "content": "TVA non applicable art. 293 B du CGI",
-        "position": { "x": 25.88, "y": 134.68 },
-        "width": 79.37,
-        "height": 10.05,
+        "content": "",
+        "position": { "x": 20, "y": 137 },
+        "width": 96.84,
+        "height": 19.05,
         "rotate": 0,
         "alignment": "left",
         "verticalAlignment": "middle",
-        "fontSize": 9,
-        "lineHeight": 1,
+        "fontSize": 12,
+        "lineHeight": 1.5,
         "characterSpacing": 0,
         "fontColor": "#000000",
         "backgroundColor": "",
@@ -210,8 +210,7 @@
         "strikethrough": false,
         "underline": false,
         "required": false,
-        "readOnly": true,
-        "fontName": "Roboto"
+        "readOnly": false
       }
     ]
   ],
@@ -221,46 +220,12 @@
     "padding": [20, 20, 20, 20],
     "staticSchema": [
       {
-        "name": "line",
-        "type": "line",
-        "position": { "x": 20, "y": 262 },
-        "width": 170,
-        "height": 1,
-        "rotate": 0,
-        "opacity": 1,
-        "readOnly": true,
-        "color": "#f5f5f5",
-        "required": false,
-        "content": ""
-      },
-      {
-        "name": "paymentTitle",
+        "name": "field1",
         "type": "text",
-        "content": "Informations de paiement:",
-        "position": { "x": 20.37, "y": 263 },
-        "width": 60,
-        "height": 10,
-        "rotate": 0,
-        "alignment": "left",
-        "verticalAlignment": "middle",
-        "fontSize": 13,
-        "lineHeight": 1,
-        "characterSpacing": 0,
-        "fontColor": "#000000",
-        "backgroundColor": "",
-        "opacity": 1,
-        "strikethrough": false,
-        "underline": false,
-        "required": false,
-        "readOnly": true
-      },
-      {
-        "name": "paymentData",
-        "type": "text",
-        "content": "Crédit Agricole\nIBAN : FR76 0000 0000 0000 0000 0000 000\nBIC / SWIFT : AGRIFRPP361",
-        "position": { "x": 20, "y": 270 },
-        "width": 120.12,
-        "height": 17,
+        "content": "TVA non applicable art. 293 B du CGI",
+        "position": { "x": 20, "y": 280 },
+        "width": 82.81,
+        "height": 10.05,
         "rotate": 0,
         "alignment": "left",
         "verticalAlignment": "middle",
@@ -277,5 +242,5 @@
       }
     ]
   },
-  "pdfmeVersion": "5.3.13"
+  "pdfmeVersion": "5.3.15"
 }
