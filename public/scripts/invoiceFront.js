@@ -213,8 +213,8 @@ const invoiceFormInteraction = {
     const tbody = document.createElement("tbody");
 
     invoices.forEach((invoice) => {
-      const { client } = invoice;
-      const { client_name, invoice_number } = client;
+      const { client, invoice_number } = invoice;
+      const { client_name } = client;
       const totalPrice = invoice.services.reduce((sum, service) => sum + service.total_price, 0);
 
       const row = document.createElement("tr");

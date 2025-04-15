@@ -55,7 +55,7 @@ class InvoicesMapper extends CoreMapper {
   // ------------------------------------------------------------------------------------ //
   // Mapper to add new invoice
   async addInvoice(invoiceData) {
-    const { invoiceMonth, invoiceYear, userId, invoiceClientId } = invoiceData;
+    const { invoiceMonth, invoiceYear, userId, invoiceClientId, invoiceNumber } = invoiceData;
 
     const createdInvoice = await this.db(this.tableName).create([
       {
@@ -64,6 +64,7 @@ class InvoicesMapper extends CoreMapper {
           invoice_year: invoiceYear,
           invoice_client_id: invoiceClientId,
           user_id: userId,
+          invoice_number: invoiceNumber,
         },
       },
     ]);

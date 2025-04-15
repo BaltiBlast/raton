@@ -141,6 +141,7 @@ const invoiceControllers = {
         invoiceYear: invoiceYear,
         invoiceClientId: clientId,
         userId: userData.user_id,
+        invoiceNumber: newInvoiceNumber,
       };
 
       // Add the invoice to the database
