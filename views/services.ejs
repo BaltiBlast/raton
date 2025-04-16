@@ -20,8 +20,7 @@
   </form>
   <hr />
   <section class="overflow-auto">
-    <% if (services) { %>
-
+    <% if (services && services.length > 0) { %>
     <table class="striped">
       <thead>
         <tr>
@@ -77,7 +76,8 @@
         <% }); %>
       </tbody>
     </table>
-
+    <% } else { %>
+    <p class="txt-align-center">Tu n'as pas encore de prestations 😞..</p>
     <% } %>
   </section>
   <script src="/scripts/serviceFront.js"></script>
