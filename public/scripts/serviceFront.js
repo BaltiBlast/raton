@@ -2,6 +2,7 @@ const serviceFront = {
   init: () => {
     getServiceEditButtons();
     formSubmitDeleteService();
+    closeModalServices();
   },
 
   getServiceEditButtons: () => {
@@ -9,7 +10,8 @@ const serviceFront = {
     spanEditButtons.forEach((span) => {
       span.addEventListener("click", () => {
         const serviceId = span.getAttribute("edit-service-id");
-        openModal(serviceId);
+        const modal = document.getElementById(serviceId);
+        openModal(modal);
       });
     });
   },
@@ -24,8 +26,18 @@ const serviceFront = {
       });
     });
   },
+
+  closeModalServices: () => {
+    const cancelButtons = document.querySelectorAll("dialog button[type='button']");
+    cancelButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const dialog = button.closest("dialog");
+        closeModal(dialog);
+      });
+    });
+  },
 };
 
-const { getServiceEditButtons, formSubmitDeleteService } = serviceFront;
+const { getServiceEditButtons, formSubmitDeleteService, closeModalServices } = serviceFront;
 
 document.addEventListener("DOMContentLoaded", serviceFront.init());

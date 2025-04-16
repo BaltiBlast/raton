@@ -20,6 +20,9 @@
     <button id="invoicePreviewButton" type="button" disabled>Prévisualiser la facture</button>
   </fieldset>
 
+  <hr />
+
+  <% if (services && services.length > 0) { %> <% services.forEach(service => { %>
   <table class="striped">
     <thead>
       <tr>
@@ -29,7 +32,6 @@
       </tr>
     </thead>
     <tbody>
-      <% if (services && services.length > 0) { %> <% services.forEach(service => { %>
       <tr data-service-id="<%= service.service_id %>">
         <td><%= service.service_name %></td>
         <td><%= service.service_price %>€</td>
@@ -47,9 +49,10 @@
           />
         </td>
       </tr>
-      <% }) %> <% } else { %>
+      <% }) %>
     </tbody>
   </table>
+  <% } else { %>
   <p class="txt-align-center">Tu n'as pas encore de prestations 😞..</p>
   <p class="txt-align-center"><a href="/services">On remédie à ça ?</a> 😏</p>
   <% } %>
