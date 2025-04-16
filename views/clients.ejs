@@ -50,7 +50,7 @@
   </form>
   <hr />
   <section class="overflow-auto">
-    <% if (clients) { %>
+    <% if (clients && clients.length > 0) { %>
     <table class="striped">
       <thead>
         <tr>
@@ -121,7 +121,7 @@
 
               <section class="grid">
                 <button type="submit">Mettre à jour</button>
-                <button type="button" onclick="closeModal('<%= client.client_id %>')">Annuler</button>
+                <button type="button">Annuler</button>
               </section>
             </form>
           </article>
@@ -130,6 +130,8 @@
         <% }); %>
       </tbody>
     </table>
+    <% } else { %>
+    <p class="txt-align-center">Tu n'as pas encore de clients 😞..</p>
     <% } %>
   </section>
   <script src="/scripts/clientFront.js"></script>
