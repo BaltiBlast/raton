@@ -85,7 +85,7 @@ const invoiceControllers = {
 
       // Get client's informations
       const client = await ClientsMapper.getClientById(clientId);
-      const { client_email, invoice_number } = client;
+      const { client_email, invoice_number, client_name } = client;
 
       // Get user's informations
       const userData = req.session.user;
@@ -158,7 +158,13 @@ const invoiceControllers = {
       await ClientsMapper.updateClient(clientData);
 
       // Send the response
-      res.json({ reload: true, success: true });
+      res.json({
+        reload: true,
+        success: true,
+        pdf: invoiceGenerated,
+        invoiceTitle: invoiceTitle,
+        clientName: client_name,
+      });
     } catch (error) {
       console.error("[ERROR postSendInvoiceEmail in invoiceControllers.js] :", error);
       res.json({ reload: true });

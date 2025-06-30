@@ -307,6 +307,11 @@ const invoiceFormInteraction = {
   sendEmail: async (event) => {
     event.preventDefault();
 
+    const button = event.target; // bouton cliqué
+    button.setAttribute("aria-busy", "true");
+    button.setAttribute("aria-label", "Ca mouline…");
+    button.disabled = true; // en option, pour éviter les doubles clics
+
     const { client_id } = clientDataSelected;
     const date = selectMonth.value;
 
@@ -325,9 +330,33 @@ const invoiceFormInteraction = {
     })
       .then((response) => response.json())
       .then((data) => {
+        console.log(data);
+
+        if (data.pdf) {
+          const byteArray = Object.values(data.pdf);
+          const uint8Array = new Uint8Array(byteArray);
+          const blob = new Blob([uint8Array], { type: "application/pdf" });
+
+          const url = URL.createObjectURL(blob);
+
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = `${data.invoiceTitle} - ${data.clientName}.pdf`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+
+          URL.revokeObjectURL(url);
+        }
+
         if (data.reload) {
           location.reload();
         }
+      })
+      .finally(() => {
+        button.removeAttribute("aria-busy");
+        button.removeAttribute("aria-label");
+        button.disabled = false; // réactiver le bouton
       });
   },
 
